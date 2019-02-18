@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TodoItem {
+class TodoItem: Encodable {
     
     // Todo properties
     var text : String = ""
