@@ -7,18 +7,22 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
 
     var itemArray : [TodoItem] = [TodoItem]()
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("TodoItems.plist")
     
-    let defaults = UserDefaults.standard
+    
+    // not gonna pretend I fully understand this
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadItems()
+        let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("TodoItems.plist")
+        
+        //loadItems()
     }
     
     //MARK: - TableView Datasource Methods
@@ -57,8 +61,9 @@ class TodoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             // what will happen once the user clicks the Add Item button in the alert
             
-            let newTodoItem = TodoItem()
+            let newTodoItem = TodoItem(context: self.context)
             newTodoItem.text = textField.text!
+            newTodoItem.done = false
             self.itemArray.append(newTodoItem)
             
             self.saveItems()
@@ -74,28 +79,26 @@ class TodoListViewController: UITableViewController {
     
     func saveItems() {
         // save updated item array to persistent store
-        let encoder = PropertyListEncoder()
         
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try self.context.save()
         } catch {
-            print("Error encoding item array: \(error)")
+            print("Error saving context: \(error)")
         }
         
         self.tableView.reloadData()
     }
     
-    func loadItems() {
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            do {
-                itemArray = try decoder.decode([TodoItem].self, from: data)
-            } catch {
-                print("Error decoding item array, \(error)")
-            }
-        }
-    }
+//    func loadItems() {
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//            let decoder = PropertyListDecoder()
+//            do {
+//                itemArray = try decoder.decode([TodoItem].self, from: data)
+//            } catch {
+//                print("Error decoding item array, \(error)")
+//            }
+//        }
+//    }
     
 }
 
