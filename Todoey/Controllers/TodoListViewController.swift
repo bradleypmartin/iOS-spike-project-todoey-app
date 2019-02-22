@@ -21,6 +21,7 @@ class TodoListViewController: UITableViewController {
         super.viewDidLoad()
         
         loadItems()
+        
     }
     
     //MARK: - TableView Datasource Methods
@@ -91,13 +92,41 @@ class TodoListViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    func loadItems() {
+    func loadItems(with request: NSFetchRequest<TodoItem> = TodoItem.fetchRequest()) {
         // Interestingly, an NSFetchRequest DOES require an explicit type
-        let request : NSFetchRequest<TodoItem> = TodoItem.fetchRequest()
         do {
             itemArray = try context.fetch(request)
         } catch {
             print("Error fetching data from context \(error)")
+        }
+        
+        tableView.reloadData()
+    }
+    
+}
+
+// MARK: - Search Bar Delegate methods
+
+extension TodoListViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        // query DB when user interacts with search bar
+        let request : NSFetchRequest<TodoItem> = TodoItem.fetchRequest()
+        
+        request.predicate = NSPredicate(format: "text CONTAINS[cd] %@", searchBar.text!)
+        request.sortDescriptors = [NSSortDescriptor(key: "text", ascending: true)]
+        
+        loadItems(with: request)
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            
+            // dismiss search bar even if background tasks are happening
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
         }
     }
     
