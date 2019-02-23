@@ -17,7 +17,6 @@ class TodoListViewController: SwipeTableViewController {
     var selectedCategory : Category? {
         didSet {
             loadItems()
-            tableView.rowHeight = 80.0
         }
     }
     
