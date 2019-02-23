@@ -9,16 +9,16 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Table View Controller-->
+        <!--Todoey-->
         <scene sceneID="5Oi-cG-xzO">
             <objects>
-                <tableViewController id="f1H-HG-EO1" sceneMemberID="viewController">
+                <tableViewController id="f1H-HG-EO1" customClass="CategoryViewController" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="x8O-jh-qcc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="i1O-F8-b5M">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CategoryCell" id="i1O-F8-b5M">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="i1O-F8-b5M" id="Kj7-qa-UD6">
@@ -32,7 +32,14 @@
                             <outlet property="delegate" destination="f1H-HG-EO1" id="U1s-sY-rrQ"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="4AH-OI-aW8"/>
+                    <navigationItem key="navigationItem" title="Todoey" id="4AH-OI-aW8">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="eh2-K9-BR9">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="f1H-HG-EO1" id="Xl9-2V-Iad"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <segue destination="tTf-EB-Sr9" kind="show" identifier="goToItems" id="GHf-0W-c5n"/>
                     </connections>
@@ -41,7 +48,7 @@
             </objects>
             <point key="canvasLocation" x="1450" y="134"/>
         </scene>
-        <!--Todoey-->
+        <!--TodoItems-->
         <scene sceneID="9S1-Od-rm1">
             <objects>
                 <tableViewController id="tTf-EB-Sr9" customClass="TodoListViewController" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
@@ -72,7 +79,7 @@
                             <outlet property="delegate" destination="tTf-EB-Sr9" id="5pL-Ry-WfE"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Todoey" id="MQv-at-Atx">
+                    <navigationItem key="navigationItem" title="TodoItems" id="MQv-at-Atx">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="mta-DN-0lF">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
