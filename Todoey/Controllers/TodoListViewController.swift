@@ -32,6 +32,7 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        
         if let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.text
             cell.accessoryType = item.done ? .checkmark : .none
@@ -48,16 +49,13 @@ class TodoListViewController: UITableViewController {
         if let item = todoItems?[indexPath.row] {
             do {
                 try realm.write {
-                    //realm.delete(item)
                     item.done = !item.done
                 }
             } catch {
                 print("Error during todoItem update: \(error)")
             }
-            
-            tableView.reloadData()
         }
-        
+        tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -77,6 +75,7 @@ class TodoListViewController: UITableViewController {
                     try self.realm.write {
                         let newTodoItem = TodoItem()
                         newTodoItem.text = textField.text!
+                        newTodoItem.dateCreated = Date()
                         currentCategory.todoItems.append(newTodoItem)
                     }
                 } catch {
@@ -96,9 +95,7 @@ class TodoListViewController: UITableViewController {
     }
     
     func loadItems() {
-
         todoItems = selectedCategory?.todoItems.sorted(byKeyPath: "text", ascending: true)
-
         tableView.reloadData()
     }
     
@@ -106,28 +103,25 @@ class TodoListViewController: UITableViewController {
 
 // MARK: - Search Bar Delegate methods
 
-//extension TodoListViewController: UISearchBarDelegate {
-//
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        // query DB when user interacts with search bar
-//        let request : NSFetchRequest<TodoItem> = TodoItem.fetchRequest()
-//
-//        let predicate = NSPredicate(format: "text CONTAINS[cd] %@", searchBar.text!)
-//        request.sortDescriptors = [NSSortDescriptor(key: "text", ascending: true)]
-//
-//        loadItems(with: request, predicate: predicate)
-//    }
-//
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if searchBar.text?.count == 0 {
-//            loadItems()
-//
-//            // dismiss search bar even if background tasks are happening
-//            DispatchQueue.main.async {
-//                searchBar.resignFirstResponder()
-//            }
-//        }
-//    }
-//
-//}
+extension TodoListViewController: UISearchBarDelegate {
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        todoItems = todoItems?.filter("text CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        
+        tableView.reloadData()
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+
+            // dismiss search bar even if background tasks are happening
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        }
+    }
+
+}
 
